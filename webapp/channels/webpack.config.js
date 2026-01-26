@@ -12,7 +12,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const webpack = require('webpack');
-const {ModuleFederationPlugin} = require('webpack').container;
+const { ModuleFederationPlugin } = require('webpack').container;
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 const packageJson = require('./package.json');
@@ -28,17 +28,17 @@ const targetIsEsLint = !targetIsBuild && !targetIsRun && !targetIsDevServer;
 const DEV = targetIsRun || targetIsStats || targetIsDevServer;
 
 const STANDARD_EXCLUDE = [
-    /node_modules/,
+  /node_modules/,
 ];
 
 let publicPath = '/static/';
 
 // Allow overriding the publicPath in dev from the exported SiteURL.
 if (DEV) {
-    const siteURL = process.env.MM_SERVICESETTINGS_SITEURL || '';
-    if (siteURL) {
-        publicPath = path.join(new url.URL(siteURL).pathname, 'static') + '/';
-    }
+  const siteURL = process.env.MM_SERVICESETTINGS_SITEURL || '';
+  if (siteURL) {
+    publicPath = path.join(new url.URL(siteURL).pathname, 'static') + '/';
+  }
 }
 
 // Track the build time so that we can bust any caches that may have incorrectly cached remote_entry.js from before we
@@ -47,423 +47,445 @@ if (DEV) {
 const buildTimestamp = Date.now();
 
 var config = {
-    entry: ['./src/root.tsx'],
-    output: {
-        publicPath,
-        filename: '[name].[contenthash].js',
-        chunkFilename: '[name].[contenthash].js',
-        assetModuleFilename: 'files/[contenthash][ext]',
-        clean: true,
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(js|jsx|ts|tsx)$/,
-                exclude: STANDARD_EXCLUDE,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        cacheDirectory: true,
+  entry: ['./src/root.tsx'],
+  output: {
+    publicPath,
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
+    assetModuleFilename: 'files/[contenthash][ext]',
+    clean: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx|ts|tsx)$/,
+        exclude: STANDARD_EXCLUDE,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
 
-                        // Babel configuration is in .babelrc because jest requires it to be there.
-                    },
-                },
-            },
-            {
-                test: /\.json$/,
-                include: [
-                    path.resolve(__dirname, 'src/i18n'),
-                ],
-                exclude: [/en\.json$/],
-                type: 'asset/resource',
-                generator: {
-                    filename: 'i18n/[name].[contenthash].json',
-                },
-            },
-            {
-                test: /\.(css|scss)$/,
-                exclude: /\/highlight\.js\//,
-                use: [
-                    DEV ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                    },
-                ],
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sassOptions: {
-                                loadPaths: ['src/sass'],
-                            },
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.(png|eot|tiff|svg|woff2|woff|ttf|gif|mp3|jpg)$/,
-                type: 'asset/resource',
-                use: [
-
-                    // Skip image optimizations during development to speed up build time
-                    !DEV && {
-                        loader: 'image-webpack-loader',
-                        options: {},
-                    },
-                ],
-            },
-            {
-                test: /\.apng$/,
-                type: 'asset/resource',
-            },
-            {
-                test: /\/highlight\.js\/.*\.css$/,
-                type: 'asset/resource',
-            },
-        ],
-    },
-    resolve: {
-        modules: [
-            'node_modules',
-            './src',
-        ],
-        alias: {
-            'mattermost-redux/test': 'packages/mattermost-redux/test',
-            'mattermost-redux': 'packages/mattermost-redux/src',
-            '@mui/styled-engine': '@mui/styled-engine-sc',
-
-            // This alias restricts single version of styled components across all packages
-            'styled-components': path.resolve(__dirname, '..', 'node_modules', 'styled-components'),
+            // Babel configuration is in .babelrc because jest requires it to be there.
+          },
         },
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        fallback: {
-            crypto: require.resolve('crypto-browserify'),
-            stream: require.resolve('stream-browserify'),
-            buffer: require.resolve('buffer/'),
+      },
+      {
+        test: /\.json$/,
+        include: [
+          path.resolve(__dirname, 'src/i18n'),
+        ],
+        exclude: [/en\.json$/],
+        type: 'asset/resource',
+        generator: {
+          filename: 'i18n/[name].[contenthash].json',
         },
-    },
-    performance: {
-        hints: 'warning',
-    },
-    target: 'web',
-    plugins: [
-        new webpack.ProvidePlugin({
-            process: 'process/browser.js',
-            Buffer: ['buffer', 'Buffer'],
-        }),
-        new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css',
-            chunkFilename: '[name].[contenthash].css',
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'root.html',
-            inject: 'head',
-            template: 'src/root.html',
-            scriptLoading: 'blocking',
-            meta: {
-                csp: {
-                    'http-equiv': 'Content-Security-Policy',
-                    content: generateCSP(),
-                },
+      },
+      {
+        test: /\.(css|scss)$/,
+        exclude: /\/highlight\.js\//,
+        use: [
+          DEV ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+          },
+        ],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                loadPaths: ['src/sass'],
+              },
             },
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {from: 'src/images/emoji', to: 'emoji'},
-                {from: 'src/images/img_trans.gif', to: 'images'},
-                {from: 'src/images/logo-email.png', to: 'images'},
-                {from: 'src/images/favicon', to: 'images/favicon'},
-                {from: 'src/images/appIcons.png', to: 'images'},
-                {from: 'src/images/logo-email.png', to: 'images'},
-                {from: 'src/images/browser-icons', to: 'images/browser-icons'},
-                {from: 'src/images/cloud', to: 'images'},
-                {from: 'src/images/welcome_illustration_new.png', to: 'images'},
-                {from: 'src/images/logo_email_blue.png', to: 'images'},
-                {from: 'src/images/logo_email_dark.png', to: 'images'},
-                {from: 'src/images/logo_email_gray.png', to: 'images'},
-                {from: 'src/images/forgot_password_illustration.png', to: 'images'},
-                {from: 'src/images/invite_illustration.png', to: 'images'},
-                {from: 'src/images/channel_icon.png', to: 'images'},
-                {from: 'src/images/c_avatar.png', to: 'images'},
-                {from: 'src/images/c_download.png', to: 'images'},
-                {from: 'src/images/c_socket.png', to: 'images'},
-                {from: 'src/images/admin-onboarding-background.jpg', to: 'images'},
-                {from: 'src/images/cloud-laptop.png', to: 'images'},
-                {from: 'src/images/cloud-laptop-error.png', to: 'images'},
-                {from: 'src/images/cloud-laptop-warning.png', to: 'images'},
-                {from: 'src/images/cloud-upgrade-person-hand-to-face.png', to: 'images'},
-                {from: 'src/images/payment_processing.png', to: 'images'},
-                {from: 'src/images/purchase_alert.png', to: 'images'},
-                {from: '../node_modules/pdfjs-dist/cmaps', to: 'cmaps'},
-            ],
-        }),
+          },
+        ],
+      },
+      {
+        test: /\.(png|eot|tiff|svg|woff2|woff|ttf|gif|mp3|jpg)$/,
+        type: 'asset/resource',
+        use: [
 
-        // Generate manifest.json, honouring any configured publicPath. This also handles injecting
-        // <link rel="apple-touch-icon" ... /> and <meta name="apple-*" ... /> tags into root.html.
-        new WebpackPwaManifest({
-            name: 'Mattermost',
-            short_name: 'Mattermost',
-            start_url: '..',
-            description: 'Mattermost is an open source, self-hosted Slack-alternative',
-            background_color: '#ffffff',
-            inject: true,
-            ios: true,
-            fingerprints: false,
-            orientation: 'any',
-            filename: 'manifest.json',
-            icons: [{
-                src: path.resolve('src/images/favicon/android-chrome-192x192.png'),
-                type: 'image/png',
-                sizes: '192x192',
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-120x120.png'),
-                type: 'image/png',
-                sizes: '120x120',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-144x144.png'),
-                type: 'image/png',
-                sizes: '144x144',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-152x152.png'),
-                type: 'image/png',
-                sizes: '152x152',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-57x57.png'),
-                type: 'image/png',
-                sizes: '57x57',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-60x60.png'),
-                type: 'image/png',
-                sizes: '60x60',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-72x72.png'),
-                type: 'image/png',
-                sizes: '72x72',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/apple-touch-icon-76x76.png'),
-                type: 'image/png',
-                sizes: '76x76',
-                ios: true,
-            }, {
-                src: path.resolve('src/images/favicon/favicon-16x16.png'),
-                type: 'image/png',
-                sizes: '16x16',
-            }, {
-                src: path.resolve('src/images/favicon/favicon-32x32.png'),
-                type: 'image/png',
-                sizes: '32x32',
-            }, {
-                src: path.resolve('src/images/favicon/favicon-96x96.png'),
-                type: 'image/png',
-                sizes: '96x96',
-            }],
-        }),
-        new MonacoWebpackPlugin({
-            languages: [],
-
-            // don't include features we disable. these generally correspond to the options
-            // passed to editor initialization in note-content-editor.tsx
-            // @see https://github.com/microsoft/monaco-editor/blob/main/webpack-plugin/README.md#options
-            features: [
-                '!bracketMatching',
-                '!codeAction',
-                '!codelens',
-                '!colorPicker',
-                '!comment',
-                '!diffEditor',
-                '!diffEditorBreadcrumbs',
-                '!folding',
-                '!gotoError',
-                '!gotoLine',
-                '!gotoSymbol',
-                '!gotoZoom',
-                '!inspectTokens',
-                '!multicursor',
-                '!parameterHints',
-                '!quickCommand',
-                '!quickHelp',
-                '!quickOutline',
-                '!referenceSearch',
-                '!rename',
-                '!snippet',
-                '!stickyScroll',
-                '!suggest',
-                '!toggleHighContrast',
-                '!unicodeHighlighter',
-            ],
-        }),
+          // Skip image optimizations during development to speed up build time
+          !DEV && {
+            loader: 'image-webpack-loader',
+            options: {},
+          },
+        ],
+      },
+      {
+        test: /\.apng$/,
+        type: 'asset/resource',
+      },
+      {
+        test: /\/highlight\.js\/.*\.css$/,
+        type: 'asset/resource',
+      },
     ],
+  },
+  resolve: {
+    modules: [
+      'node_modules',
+      './src',
+    ],
+    alias: {
+      'mattermost-redux/test': 'packages/mattermost-redux/test',
+      // 品牌配置别名：将 getConfig 重定向到带品牌配置的版本（必须放在更通用的别名之前）
+      // 注意：webpack 别名需要指向完整的文件路径（包含扩展名）
+      'mattermost-redux/selectors/entities/general': path.resolve(__dirname, 'src/utils/config_with_brand.ts'),
+      'mattermost-redux': 'packages/mattermost-redux/src',
+      '@mui/styled-engine': '@mui/styled-engine-sc',
+
+      // This alias restricts single version of styled components across all packages
+      'styled-components': path.resolve(__dirname, '..', 'node_modules', 'styled-components'),
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer/'),
+    },
+  },
+  performance: {
+    hints: 'warning',
+  },
+  target: 'web',
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser.js',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[name].[contenthash].css',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'root.html',
+      inject: 'head',
+      template: 'src/root.html',
+      scriptLoading: 'blocking',
+      meta: {
+        csp: {
+          'http-equiv': 'Content-Security-Policy',
+          content: generateCSP(),
+        },
+      },
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/images/emoji', to: 'emoji' },
+        { from: 'src/images/img_trans.gif', to: 'images' },
+        { from: 'src/images/logo-email.png', to: 'images' },
+        { from: 'src/images/favicon', to: 'images/favicon' },
+        { from: 'src/images/appIcons.png', to: 'images' },
+        { from: 'src/images/logo-email.png', to: 'images' },
+        { from: 'src/images/browser-icons', to: 'images/browser-icons' },
+        { from: 'src/images/cloud', to: 'images' },
+        { from: 'src/images/welcome_illustration_new.png', to: 'images' },
+        { from: 'src/images/logo_email_blue.png', to: 'images' },
+        { from: 'src/images/logo_email_dark.png', to: 'images' },
+        { from: 'src/images/logo_email_gray.png', to: 'images' },
+        { from: 'src/images/forgot_password_illustration.png', to: 'images' },
+        { from: 'src/images/invite_illustration.png', to: 'images' },
+        { from: 'src/images/channel_icon.png', to: 'images' },
+        { from: 'src/images/c_avatar.png', to: 'images' },
+        { from: 'src/images/c_download.png', to: 'images' },
+        { from: 'src/images/c_socket.png', to: 'images' },
+        { from: 'src/images/admin-onboarding-background.jpg', to: 'images' },
+        { from: 'src/images/cloud-laptop.png', to: 'images' },
+        { from: 'src/images/cloud-laptop-error.png', to: 'images' },
+        { from: 'src/images/cloud-laptop-warning.png', to: 'images' },
+        { from: 'src/images/cloud-upgrade-person-hand-to-face.png', to: 'images' },
+        { from: 'src/images/payment_processing.png', to: 'images' },
+        { from: 'src/images/purchase_alert.png', to: 'images' },
+        { from: '../node_modules/pdfjs-dist/cmaps', to: 'cmaps' },
+      ],
+    }),
+
+    // Generate manifest.json, honouring any configured publicPath. This also handles injecting
+    // <link rel="apple-touch-icon" ... /> and <meta name="apple-*" ... /> tags into root.html.
+    new WebpackPwaManifest({
+      name: 'Mattermost',
+      short_name: 'Mattermost',
+      start_url: '..',
+      description: 'Mattermost is an open source, self-hosted Slack-alternative',
+      background_color: '#ffffff',
+      inject: true,
+      ios: true,
+      fingerprints: false,
+      orientation: 'any',
+      filename: 'manifest.json',
+      icons: [{
+        src: path.resolve('src/images/favicon/android-chrome-192x192.png'),
+        type: 'image/png',
+        sizes: '192x192',
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-120x120.png'),
+        type: 'image/png',
+        sizes: '120x120',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-144x144.png'),
+        type: 'image/png',
+        sizes: '144x144',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-152x152.png'),
+        type: 'image/png',
+        sizes: '152x152',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-57x57.png'),
+        type: 'image/png',
+        sizes: '57x57',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-60x60.png'),
+        type: 'image/png',
+        sizes: '60x60',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-72x72.png'),
+        type: 'image/png',
+        sizes: '72x72',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/apple-touch-icon-76x76.png'),
+        type: 'image/png',
+        sizes: '76x76',
+        ios: true,
+      }, {
+        src: path.resolve('src/images/favicon/favicon-16x16.png'),
+        type: 'image/png',
+        sizes: '16x16',
+      }, {
+        src: path.resolve('src/images/favicon/favicon-32x32.png'),
+        type: 'image/png',
+        sizes: '32x32',
+      }, {
+        src: path.resolve('src/images/favicon/favicon-96x96.png'),
+        type: 'image/png',
+        sizes: '96x96',
+      }],
+    }),
+    new MonacoWebpackPlugin({
+      languages: [],
+
+      // don't include features we disable. these generally correspond to the options
+      // passed to editor initialization in note-content-editor.tsx
+      // @see https://github.com/microsoft/monaco-editor/blob/main/webpack-plugin/README.md#options
+      features: [
+        '!bracketMatching',
+        '!codeAction',
+        '!codelens',
+        '!colorPicker',
+        '!comment',
+        '!diffEditor',
+        '!diffEditorBreadcrumbs',
+        '!folding',
+        '!gotoError',
+        '!gotoLine',
+        '!gotoSymbol',
+        '!gotoZoom',
+        '!inspectTokens',
+        '!multicursor',
+        '!parameterHints',
+        '!quickCommand',
+        '!quickHelp',
+        '!quickOutline',
+        '!referenceSearch',
+        '!rename',
+        '!snippet',
+        '!stickyScroll',
+        '!suggest',
+        '!toggleHighContrast',
+        '!unicodeHighlighter',
+      ],
+    }),
+  ],
 };
 
 function generateCSP() {
-    let csp = 'script-src \'self\' js.stripe.com/v3';
+  let csp = 'script-src \'self\' js.stripe.com/v3';
 
-    if (DEV) {
-        // Development source maps require eval
-        csp += ' \'unsafe-eval\'';
-    }
+  if (DEV) {
+    // Development source maps require eval
+    csp += ' \'unsafe-eval\'';
+  }
 
-    return csp;
+  return csp;
 }
 
 async function initializeModuleFederation() {
-    function makeSharedModules(packageNames, singleton) {
-        const sharedObject = {};
+  function makeSharedModules(packageNames, singleton) {
+    const sharedObject = {};
 
-        for (const packageName of packageNames) {
-            const version = packageJson.dependencies[packageName];
+    for (const packageName of packageNames) {
+      const version = packageJson.dependencies[packageName];
 
-            sharedObject[packageName] = {
+      sharedObject[packageName] = {
 
-                // Ensure only one copy of this package is ever loaded
-                singleton,
+        // Ensure only one copy of this package is ever loaded
+        singleton,
 
-                // Setting this to true causes the app to error out if the required version is not satisfied
-                strictVersion: singleton,
+        // Setting this to true causes the app to error out if the required version is not satisfied
+        strictVersion: singleton,
 
-                // Set these to match the specific version that the web app includes
-                requiredVersion: singleton ? version : undefined,
-                version,
-            };
-        }
-
-        return sharedObject;
+        // Set these to match the specific version that the web app includes
+        requiredVersion: singleton ? version : undefined,
+        version,
+      };
     }
 
-    async function getRemoteContainers() {
-        const products = [];
+    return sharedObject;
+  }
 
-        const remotes = {};
-        for (const product of products) {
-            remotes[product.name] = `${product.name}@[window.basename]/static/products/${product.name}/remote_entry.js?bt=${buildTimestamp}`;
-        }
+  async function getRemoteContainers() {
+    const products = [];
 
-        return {remotes};
+    const remotes = {};
+    for (const product of products) {
+      remotes[product.name] = `${product.name}@[window.basename]/static/products/${product.name}/remote_entry.js?bt=${buildTimestamp}`;
     }
 
-    const {remotes} = await getRemoteContainers();
+    return { remotes };
+  }
 
-    const moduleFederationPluginOptions = {
-        name: 'mattermost_webapp',
-        remotes,
-        shared: [
+  const { remotes } = await getRemoteContainers();
 
-            // Shared modules will be made available to other containers (ie products and plugins using module federation).
-            // To allow for better sharing, containers shouldn't require exact versions of packages like the web app does.
+  const moduleFederationPluginOptions = {
+    name: 'mattermost_webapp',
+    remotes,
+    shared: [
 
-            // Other containers will use these shared modules if their required versions match. If they don't match, the
-            // version packaged with the container will be used.
-            makeSharedModules([
-                '@mattermost/client',
-                '@mattermost/types',
-                'luxon',
-            ], false),
+      // Shared modules will be made available to other containers (ie products and plugins using module federation).
+      // To allow for better sharing, containers shouldn't require exact versions of packages like the web app does.
 
-            // Other containers will be forced to use the exact versions of shared modules that the web app provides.
-            makeSharedModules([
-                'history',
-                'react',
-                'react-beautiful-dnd',
-                'react-bootstrap',
-                'react-dom',
-                'react-intl',
-                'react-redux',
-                'react-router-dom',
-                'styled-components',
-            ], true),
-        ],
-    };
+      // Other containers will use these shared modules if their required versions match. If they don't match, the
+      // version packaged with the container will be used.
+      makeSharedModules([
+        '@mattermost/client',
+        '@mattermost/types',
+        'luxon',
+      ], false),
 
-    // Desktop specific code for remote module loading
-    moduleFederationPluginOptions.exposes = {
-        './app': 'components/app',
-        './store': 'stores/redux_store',
-        './styles': './src/sass/styles.scss',
-        './registry': 'module_registry',
-    };
-    moduleFederationPluginOptions.filename = `remote_entry.js?bt=${buildTimestamp}`;
+      // Other containers will be forced to use the exact versions of shared modules that the web app provides.
+      makeSharedModules([
+        'history',
+        'react',
+        'react-beautiful-dnd',
+        'react-bootstrap',
+        'react-dom',
+        'react-intl',
+        'react-redux',
+        'react-router-dom',
+        'styled-components',
+      ], true),
+    ],
+  };
 
-    config.plugins.push(new ModuleFederationPlugin(moduleFederationPluginOptions));
+  // Desktop specific code for remote module loading
+  moduleFederationPluginOptions.exposes = {
+    './app': 'components/app',
+    './store': 'stores/redux_store',
+    './styles': './src/sass/styles.scss',
+    './registry': 'module_registry',
+  };
+  moduleFederationPluginOptions.filename = `remote_entry.js?bt=${buildTimestamp}`;
 
-    // Add this plugin to perform the substitution of window.basename when loading remote containers
-    config.plugins.push(new ExternalTemplateRemotesPlugin());
+  config.plugins.push(new ModuleFederationPlugin(moduleFederationPluginOptions));
 
-    config.plugins.push(new webpack.DefinePlugin({
-        REMOTE_CONTAINERS: JSON.stringify(remotes),
-    }));
+  // Add this plugin to perform the substitution of window.basename when loading remote containers
+  config.plugins.push(new ExternalTemplateRemotesPlugin());
+
+  config.plugins.push(new webpack.DefinePlugin({
+    REMOTE_CONTAINERS: JSON.stringify(remotes),
+  }));
 }
 
 if (DEV) {
-    // Development mode configuration
-    config.mode = 'development';
-    config.devtool = 'eval-cheap-module-source-map';
+  // Development mode configuration
+  config.mode = 'development';
+  config.devtool = 'eval-cheap-module-source-map';
 } else {
-    // Production mode configuration
-    config.mode = 'production';
-    config.devtool = 'source-map';
+  // Production mode configuration
+  config.mode = 'production';
+  config.devtool = 'source-map';
 }
 
 const env = {};
 if (DEV) {
-    env.PUBLIC_PATH = JSON.stringify(publicPath);
+  env.PUBLIC_PATH = JSON.stringify(publicPath);
 } else {
-    env.NODE_ENV = JSON.stringify('production');
+  env.NODE_ENV = JSON.stringify('production');
 }
 
 config.plugins.push(new webpack.DefinePlugin({
-    'process.env': env,
+  'process.env': env,
 }));
 
 if (targetIsDevServer) {
-    const proxyToServer = {
-        logLevel: 'silent',
-        target: process.env.MM_SERVICESETTINGS_SITEURL ?? 'http://localhost:8065',
-        xfwd: true,
-    };
+  const proxyToServer = {
+    logLevel: 'silent',
+    // 后端 API 地址配置
+    // 优先级：环境变量 MM_SERVICESETTINGS_SITEURL > 默认值
+    // 可以通过设置环境变量覆盖：export MM_SERVICESETTINGS_SITEURL=https://your-backend.com
+    target: process.env.MM_SERVICESETTINGS_SITEURL ?? 'https://guduu-im.zeabur.app',
+    // 跨域配置（类似 Vue 的代理配置）
+    changeOrigin: true,        // 改变请求头中的 origin，解决跨域问题
+    secure: true,              // 如果是 HTTPS，验证 SSL 证书（如果后端是自签名证书，改为 false）
+    xfwd: true,               // 添加 X-Forwarded-* 头
+    // 处理响应头，解决跨域问题
+    onProxyRes: function (proxyRes, req, res) {
+      // 允许所有来源（开发环境）
+      proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+      proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, PATCH, OPTIONS';
+      proxyRes.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With';
+      proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
+    },
+    // 处理请求头
+    onProxyReq: function (proxyReq, req, res) {
+      // 如果需要，可以在这里修改请求头
+      // 例如：proxyReq.setHeader('X-Custom-Header', 'value');
+    },
+  };
 
-    config = {
-        ...config,
-        devtool: 'eval-cheap-module-source-map',
-        devServer: {
-            liveReload: true,
-            proxy: [
-                {
-                    context: '/api',
-                    ...proxyToServer,
-                    ws: true,
-                },
-                {
-                    context: '/plugins',
-                    ...proxyToServer,
-                },
-                {
-                    context: '/static/plugins',
-                    ...proxyToServer,
-                },
-            ],
-            port: 9005,
-            devMiddleware: {
-                writeToDisk: false,
-            },
-            historyApiFallback: {
-                index: '/static/root.html',
-            },
+  config = {
+    ...config,
+    devtool: 'eval-cheap-module-source-map',
+    devServer: {
+      liveReload: true,
+      proxy: [
+        {
+          context: '/api',
+          ...proxyToServer,
+          ws: true,
         },
-        performance: false,
-        optimization: {
-            ...config.optimization,
-            splitChunks: false,
+        {
+          context: '/plugins',
+          ...proxyToServer,
         },
-    };
+        {
+          context: '/static/plugins',
+          ...proxyToServer,
+        },
+      ],
+      port: 9005,
+      devMiddleware: {
+        writeToDisk: false,
+      },
+      historyApiFallback: {
+        index: '/static/root.html',
+      },
+    },
+    performance: false,
+    optimization: {
+      ...config.optimization,
+      splitChunks: false,
+    },
+  };
 }
 
 // Export PRODUCTION_PERF_DEBUG=1 when running webpack to enable support for the react profiler
@@ -472,24 +494,24 @@ if (targetIsDevServer) {
 // See https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html and
 // https://gist.github.com/bvaughn/25e6233aeb1b4f0cdb8d8366e54a3977
 if (process.env.PRODUCTION_PERF_DEBUG) {
-    console.log('Enabling production performance debug settings'); //eslint-disable-line no-console
-    config.resolve.alias['react-dom'] = 'react-dom/profiling';
-    config.resolve.alias['schedule/tracing'] = 'schedule/tracing-profiling';
-    config.optimization = {
+  console.log('Enabling production performance debug settings'); //eslint-disable-line no-console
+  config.resolve.alias['react-dom'] = 'react-dom/profiling';
+  config.resolve.alias['schedule/tracing'] = 'schedule/tracing-profiling';
+  config.optimization = {
 
-        // Skip minification to make the profiled data more useful.
-        minimize: false,
-    };
+    // Skip minification to make the profiled data more useful.
+    minimize: false,
+  };
 }
 
 if (targetIsEsLint) {
-    // ESLint can't handle setting an async config, so just skip the async part
-    module.exports = config;
+  // ESLint can't handle setting an async config, so just skip the async part
+  module.exports = config;
 } else {
-    module.exports = async () => {
-        // Do this asynchronously so we can determine whether which remote modules are available
-        await initializeModuleFederation();
+  module.exports = async () => {
+    // Do this asynchronously so we can determine whether which remote modules are available
+    await initializeModuleFederation();
 
-        return config;
-    };
+    return config;
+  };
 }

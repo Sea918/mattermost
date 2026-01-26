@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.bundle.js
+
+# Generated files
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# Logs
+*.log
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+*~
+
+# i18n files (usually auto-generated)
+src/i18n/*.json
+
+# Webpack stats
+webpack_stats.json

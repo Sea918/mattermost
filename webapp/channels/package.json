@@ -173,10 +173,12 @@
     }
   },
   "scripts": {
-    "check": "npm run check:eslint && npm run check:stylelint",
+    "check": "npm run check:eslint && npm run check:stylelint && npm run check:prettier",
     "check:eslint": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache",
     "check:stylelint": "stylelint \"**/*.{css,scss}\" --cache",
-    "fix": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && stylelint \"**/*.{css,scss}\" --fix --cache",
+    "check:prettier": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "fix": "npm run fix:prettier && eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && stylelint \"**/*.{css,scss}\" --fix --cache",
+    "fix:prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "build": "cross-env NODE_ENV=production webpack",
     "run": "webpack --progress --watch",
     "dev-server": "webpack serve --mode development",
