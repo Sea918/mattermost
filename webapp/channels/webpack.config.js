@@ -49,6 +49,7 @@ const buildTimestamp = Date.now();
 var config = {
   entry: ['./src/root.tsx'],
   output: {
+    path: path.resolve(__dirname, 'dist', 'static'),
     publicPath,
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
@@ -166,6 +167,7 @@ var config = {
       inject: 'head',
       template: 'src/root.html',
       scriptLoading: 'blocking',
+      publicPath: publicPath,
       meta: {
         csp: {
           'http-equiv': 'Content-Security-Policy',
