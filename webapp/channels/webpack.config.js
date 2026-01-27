@@ -479,6 +479,10 @@ if (targetIsDevServer) {
       historyApiFallback: {
         index: '/static/root.html',
       },
+      // 禁用 webpack 编译警告和错误的 iframe 弹出层
+      client: {
+        overlay: false,
+      },
     },
     performance: false,
     optimization: {
