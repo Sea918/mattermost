@@ -20,7 +20,8 @@ export const BRAND_CONFIG = {
    * 网站名称 - 显示在登录页、页面标题等位置
    * 如果设置为空字符串，将使用后端配置
    */
-  SITE_NAME: '',
+  SITE_NAME: 'Guduu OS',
+  SITE_NAME_SHORT: 'Guduu OS',
 
   /**
    * 公司域名 - 用于生成链接等
@@ -118,10 +119,10 @@ export const BRAND_CONFIG = {
   META: {
 
     // 页面标题后缀
-    TITLE_SUFFIX: ' - 您的公司名称',
+    TITLE_SUFFIX: ' - Guduu IM',
 
     // 默认描述
-    DESCRIPTION: '您的公司协作平台',
+    DESCRIPTION: 'Guduu IM',
   },
 } as const;
 

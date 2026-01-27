@@ -55,7 +55,7 @@ const Header = ({alternateLink, backButtonURL, onBackButtonClick}: HeaderProps) 
                             {freeBanner}
                         </Link>
                     }
-                    {title &&
+                    {/* {title &&
                         <Link
                             className='header-logo-link'
                             to='/'
@@ -63,7 +63,7 @@ const Header = ({alternateLink, backButtonURL, onBackButtonClick}: HeaderProps) 
                         >
                             {title}
                         </Link>
-                    }
+                    } */}
                 </div>
                 {alternateLink}
             </div>
