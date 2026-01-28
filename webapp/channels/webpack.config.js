@@ -3,6 +3,7 @@
 
 /* eslint-disable no-console, no-process-env */
 
+const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
@@ -16,6 +17,50 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 const packageJson = require('./package.json');
+
+// 从 brand_config.ts 读取品牌配置（构建时使用）
+function getBrandConfigForBuild() {
+  const brandConfigPath = path.resolve(__dirname, 'src/utils/brand_config.ts');
+  const defaultConfig = {
+    SITE_NAME: 'Mattermost1',
+    SITE_NAME_SHORT: 'Mattermost1',
+    DESCRIPTION: 'Mattermost is an open source, self-hosted Slack-alternative',
+  };
+
+  try {
+    const fileContent = fs.readFileSync(brandConfigPath, 'utf8');
+
+    // 提取 SITE_NAME
+    const siteNameMatch = fileContent.match(/SITE_NAME:\s*['"]([^'"]+)['"]/);
+    if (siteNameMatch) {
+      defaultConfig.SITE_NAME = siteNameMatch[1];
+    }
+
+    // 提取 SITE_NAME_SHORT
+    const siteNameShortMatch = fileContent.match(/SITE_NAME_SHORT:\s*['"]([^'"]+)['"]/);
+    if (siteNameShortMatch) {
+      defaultConfig.SITE_NAME_SHORT = siteNameShortMatch[1];
+    } else {
+      // 如果没有 SITE_NAME_SHORT，使用 SITE_NAME
+      defaultConfig.SITE_NAME_SHORT = defaultConfig.SITE_NAME;
+    }
+
+    // 提取 META.DESCRIPTION（在 META 对象中）
+    const metaSection = fileContent.match(/META:\s*\{[\s\S]*?\}/);
+    if (metaSection) {
+      const metaDescriptionMatch = metaSection[0].match(/DESCRIPTION:\s*['"]([^'"]+)['"]/);
+      if (metaDescriptionMatch) {
+        defaultConfig.DESCRIPTION = metaDescriptionMatch[1];
+      }
+    }
+  } catch (error) {
+    console.warn('Warning: Could not read brand_config.ts, using default values:', error.message);
+  }
+
+  return defaultConfig;
+}
+
+const brandConfig = getBrandConfigForBuild();
 
 const NPM_TARGET = process.env.npm_lifecycle_event;
 
@@ -168,10 +213,18 @@ var config = {
       template: 'src/root.html',
       scriptLoading: 'blocking',
       publicPath: publicPath,
+      // 传递品牌配置给模板
+      templateParameters: {
+        siteName: brandConfig.SITE_NAME,
+      },
       meta: {
         csp: {
           'http-equiv': 'Content-Security-Policy',
           content: generateCSP(),
+        },
+        'application-name': {
+          name: 'application-name',
+          content: brandConfig.SITE_NAME,
         },
       },
     }),
@@ -196,11 +249,12 @@ var config = {
 
     // Generate manifest.json, honouring any configured publicPath. This also handles injecting
     // <link rel="apple-touch-icon" ... /> and <meta name="apple-*" ... /> tags into root.html.
+    // 使用品牌配置（从 brand_config.ts 读取）
     new WebpackPwaManifest({
-      name: 'Mattermost',
-      short_name: 'Mattermost',
+      name: brandConfig.SITE_NAME,
+      short_name: brandConfig.SITE_NAME_SHORT,
       start_url: '..',
-      description: 'Mattermost is an open source, self-hosted Slack-alternative',
+      description: brandConfig.DESCRIPTION,
       background_color: '#ffffff',
       inject: true,
       ios: true,
