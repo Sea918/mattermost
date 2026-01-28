@@ -25,14 +25,18 @@ export const BRAND_CONFIG = {
 
   /**
    * 公司域名 - 用于生成链接等
+   * 注意：这里应该配置前端域名（通过 Nginx 代理），而不是后端 API 地址
+   * 这样所有请求都会走同源，避免 CORS 问题
    */
-  COMPANY_DOMAIN: 'https://guduu-im.zeabur.app',
+  COMPANY_DOMAIN: 'https://im.guduu.co',
 
   /**
    * 网站完整 URL - 用于生成链接、邮件等
+   * 注意：这里应该配置前端域名（通过 Nginx 代理），而不是后端 API 地址
+   * 这样 WebSocket、PDF 预览等都会走同源，避免 CORS 问题
    * 如果设置为空字符串，将使用后端配置
    */
-  SITE_URL: 'https://guduu-im.zeabur.app',
+  SITE_URL: 'https://im.guduu.co',
 
   // ========== 品牌文本 ==========
   /**
