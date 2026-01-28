@@ -21,9 +21,11 @@ export type HeaderProps = {
 }
 
 const Header = ({alternateLink, backButtonURL, onBackButtonClick}: HeaderProps) => {
-    const {SiteName} = useSelector(getConfig);
+    const config = useSelector(getConfig);
+    const {SiteName} = config;
     const license = useSelector(getLicense);
 
+    // 通过 tsconfig.json 路径映射，getConfig 会自动使用 brand_config，所以这里不需要硬编码默认值
     const ariaLabel = SiteName || 'Mattermost';
 
     let freeBanner = null;

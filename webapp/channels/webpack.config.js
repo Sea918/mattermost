@@ -177,31 +177,19 @@ var config = {
     }),
     new CopyWebpackPlugin({
       patterns: [
+        // 先复制 emoji 目录（单独处理，避免被下面的通用规则覆盖）
         { from: 'src/images/emoji', to: 'emoji' },
-        { from: 'src/images/img_trans.gif', to: 'images' },
-        { from: 'src/images/logo-email.png', to: 'images' },
-        { from: 'src/images/favicon', to: 'images/favicon' },
-        { from: 'src/images/appIcons.png', to: 'images' },
-        { from: 'src/images/logo-email.png', to: 'images' },
-        { from: 'src/images/browser-icons', to: 'images/browser-icons' },
-        { from: 'src/images/cloud', to: 'images' },
-        { from: 'src/images/welcome_illustration_new.png', to: 'images' },
-        { from: 'src/images/logo_email_blue.png', to: 'images' },
-        { from: 'src/images/logo_email_dark.png', to: 'images' },
-        { from: 'src/images/logo_email_gray.png', to: 'images' },
-        { from: 'src/images/forgot_password_illustration.png', to: 'images' },
-        { from: 'src/images/invite_illustration.png', to: 'images' },
-        { from: 'src/images/channel_icon.png', to: 'images' },
-        { from: 'src/images/c_avatar.png', to: 'images' },
-        { from: 'src/images/c_download.png', to: 'images' },
-        { from: 'src/images/c_socket.png', to: 'images' },
-        { from: 'src/images/admin-onboarding-background.jpg', to: 'images' },
-        { from: 'src/images/cloud-laptop.png', to: 'images' },
-        { from: 'src/images/cloud-laptop-error.png', to: 'images' },
-        { from: 'src/images/cloud-laptop-warning.png', to: 'images' },
-        { from: 'src/images/cloud-upgrade-person-hand-to-face.png', to: 'images' },
-        { from: 'src/images/payment_processing.png', to: 'images' },
-        { from: 'src/images/purchase_alert.png', to: 'images' },
+        // 复制整个 images 目录（排除 emoji，因为已经单独处理）
+        // 这样可以确保所有新增或替换的图片都被包含，包括 bk_imgs 等自定义文件夹
+        // 本地运行什么样，打包就应该是什么样子的逻辑
+        {
+          from: 'src/images',
+          to: 'images',
+          globOptions: {
+            ignore: ['**/emoji/**'], // 排除 emoji，因为已经单独处理
+          },
+          noErrorOnMissing: true, // 如果文件不存在也不报错
+        },
         { from: '../node_modules/pdfjs-dist/cmaps', to: 'cmaps' },
       ],
     }),

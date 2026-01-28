@@ -3,12 +3,19 @@
 
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
+import {useSelector} from 'react-redux';
+
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 type Props = {
     customDescriptionText?: string;
     siteName: string | undefined;
 };
-const SiteNameAndDescription = ({customDescriptionText, siteName = 'Mattermost'}: Props) => {
+const SiteNameAndDescription = ({customDescriptionText, siteName}: Props) => {
+    const config = useSelector(getConfig);
+    // 如果 siteName 未传入，从 getConfig 获取（通过 tsconfig.json 路径映射，会自动使用 brand_config）
+    const displaySiteName = siteName || config.SiteName || 'Mattermost';
+
     const description = customDescriptionText || (
         <FormattedMessage
             id='web.root.signup_info'
@@ -18,7 +25,7 @@ const SiteNameAndDescription = ({customDescriptionText, siteName = 'Mattermost'}
 
     return (
         <>
-            <h1 id='site_name'>{siteName}</h1>
+            <h1 id='site_name'>{displaySiteName}</h1>
             <h3
                 id='site_description'
                 className='color--light'
