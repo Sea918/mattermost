@@ -188,6 +188,8 @@
     "test:debug": "cross-env TZ=Etc/UTC LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 jest --forceExit --detectOpenHandles --verbose",
     "test-ci": "cross-env TZ=Etc/UTC LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 jest --ci --maxWorkers=100% --forceExit --detectOpenHandles --logHeapUsage --coverage",
     "clean": "rm -rf dist node_modules .eslintcache .stylelintcache tsconfig.tsbuildinfo",
+    "clean:cache": "node -e \"try{require('fs').rmSync('dist',{recursive:true,force:true})}catch(e){};try{require('fs').rmSync('node_modules/.cache',{recursive:true,force:true})}catch(e){}\"",
+    "clean-build": "npm run clean:cache && npm run build",
     "stats": "cross-env NODE_ENV=production webpack --profile --json > webpack_stats.json",
     "i18n-extract": "formatjs extract 'src/**/*.{js,jsx,ts,tsx}' --additional-function-names localizeMessage --ignore 'src/**/*.d.ts' --ignore 'src/**/*.test.{js,jsx,ts,tsx}' --out-file src/i18n/en.json --format scripts/formatter.js --id-interpolation-pattern '[sha512:contenthash:base64:6]' --preserve-whitespace",
     "i18n-extract:check": "npm run i18n-extract -- --throws --out-file .i18n-check.tmp.json && diff src/i18n/en.json .i18n-check.tmp.json && rm -f .i18n-check.tmp.json || (rm -f .i18n-check.tmp.json && echo '\nen.json is out of sync with code. \nTo update: npm run i18n-extract' && exit 1)",

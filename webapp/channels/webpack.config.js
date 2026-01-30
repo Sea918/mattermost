@@ -109,7 +109,8 @@ var config = {
         use: {
           loader: 'babel-loader',
           options: {
-            cacheDirectory: true,
+            // 生产构建禁用缓存，避免改图标/品牌后打包仍用旧缓存导致部署后不生效
+            cacheDirectory: DEV,
 
             // Babel configuration is in .babelrc because jest requires it to be there.
           },
