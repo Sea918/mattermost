@@ -76,7 +76,9 @@ const STANDARD_EXCLUDE = [
   /node_modules/,
 ];
 
-// 生产：publicPath 为 '/'，使 root.html 中资源引用为 /static/xxx.js（output.filename 已含 static/）
+// 生产：publicPath 为 '/'，filename 包含 static/ 前缀
+// 文件输出到 dist/static/ 目录，HTML 中引用 /static/xxx.js
+// 服务器配置 /static/ 映射到 dist/static/ 目录即可
 // 开发：可从环境变量覆盖，否则用 '/'，保证 /static/xxx 能正确解析
 let publicPath = '/';
 
@@ -99,6 +101,7 @@ var config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath,
+    // 所有资源统一放到 dist/static/ 目录下，HTML 中引用 /static/xxx.js
     filename: 'static/[name].[contenthash].js',
     chunkFilename: 'static/[name].[contenthash].js',
     assetModuleFilename: 'static/files/[contenthash][ext]',
@@ -215,6 +218,7 @@ var config = {
       Buffer: ['buffer', 'Buffer'],
     }),
     new MiniCssExtractPlugin({
+      // CSS 文件统一放到 dist/static/ 目录下
       filename: 'static/[name].[contenthash].css',
       chunkFilename: 'static/[name].[contenthash].css',
     }),
