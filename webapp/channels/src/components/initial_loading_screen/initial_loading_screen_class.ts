@@ -6,6 +6,7 @@ import {isDesktopApp} from 'utils/user_agent';
 
 const ANIMATION_CLASS_FOR_MATTERMOST_LOGO_HIDE = 'LoadingAnimation__compass-shrink';
 const ANIMATION_CLASS_FOR_COMPLETE_LOADER_HIDE = 'LoadingAnimation__shrink';
+const ANIMATION_CLASS_FOR_FADE_OUT = 'LoadingAnimation__fade-out';
 
 const DESTROY_DELAY_AFTER_ANIMATION_END = 1000;
 const MINIMUM_LOADING_TIME = 1000; // Minimum time to show the loading screen (in ms)
@@ -54,7 +55,7 @@ export class InitialLoadingScreenClass {
             return;
         }
 
-        if (event.animationName === ANIMATION_CLASS_FOR_MATTERMOST_LOGO_HIDE || event.animationName === ANIMATION_CLASS_FOR_COMPLETE_LOADER_HIDE) {
+        if (event.animationName === ANIMATION_CLASS_FOR_MATTERMOST_LOGO_HIDE || event.animationName === ANIMATION_CLASS_FOR_COMPLETE_LOADER_HIDE || event.animationName === ANIMATION_CLASS_FOR_FADE_OUT) {
             if (!this.isLoading) {
                 this.loadingAnimationElement.className = STATIC_CLASS_FOR_ANIMATION;
 
@@ -115,7 +116,12 @@ export class InitialLoadingScreenClass {
         this.startTime = Date.now();
 
         this.loadingScreenElement.className = LOADING_CLASS_FOR_SCREEN;
-        this.loadingAnimationElement.className = LOADING_CLASS_FOR_ANIMATION;
+        // 使用自定义 logo（简单转圈环 + logo）时保留 LoadingAnimation--custom-logo
+        const useCustomLogo = this.loadingAnimationElement.querySelector('.LoadingAnimation__simple') ||
+            this.loadingAnimationElement.querySelector('.LoadingAnimation__custom-logo-spin');
+        this.loadingAnimationElement.className = useCustomLogo
+            ? LOADING_CLASS_FOR_ANIMATION + ' LoadingAnimation--custom-logo'
+            : LOADING_CLASS_FOR_ANIMATION;
     }
 
     public stop(pageType: string) {
@@ -146,7 +152,12 @@ export class InitialLoadingScreenClass {
             this.isLoading = false;
 
             this.loadingScreenElement.className = LOADING_COMPLETE_CLASS_FOR_SCREEN;
-            this.loadingAnimationElement.className = LOADING_COMPLETE_CLASS_FOR_ANIMATION;
+            // 保留 LoadingAnimation--custom-logo，否则会走默认的 shrink 动画导致缩小
+            const useCustomLogo = this.loadingAnimationElement.querySelector('.LoadingAnimation__simple') ||
+                this.loadingAnimationElement.querySelector('.LoadingAnimation__custom-logo-spin');
+            this.loadingAnimationElement.className = useCustomLogo
+                ? LOADING_COMPLETE_CLASS_FOR_ANIMATION + ' LoadingAnimation--custom-logo'
+                : LOADING_COMPLETE_CLASS_FOR_ANIMATION;
         }, remainingTime);
     }
 }

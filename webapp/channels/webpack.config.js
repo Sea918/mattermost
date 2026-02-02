@@ -153,8 +153,15 @@ var config = {
           },
         ],
       },
+      // favicon 等小图不走 image-webpack-loader，避免 pngquant 在部分环境（如 Windows）构建失败
       {
         test: /\.(png|eot|tiff|svg|woff2|woff|ttf|gif|mp3|jpg)$/,
+        include: path.resolve(__dirname, 'src/images/favicon'),
+        type: 'asset/resource',
+      },
+      {
+        test: /\.(png|eot|tiff|svg|woff2|woff|ttf|gif|mp3|jpg)$/,
+        exclude: path.resolve(__dirname, 'src/images/favicon'),
         type: 'asset/resource',
         use: [
 
