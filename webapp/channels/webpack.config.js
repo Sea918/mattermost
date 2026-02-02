@@ -76,13 +76,15 @@ const STANDARD_EXCLUDE = [
   /node_modules/,
 ];
 
-let publicPath = '/static/';
+// 生产：publicPath 为 '/'，使 root.html 中资源引用为 /static/xxx.js（output.filename 已含 static/）
+// 开发：可从环境变量覆盖，否则用 '/'，保证 /static/xxx 能正确解析
+let publicPath = '/';
 
-// Allow overriding the publicPath in dev from the exported SiteURL.
 if (DEV) {
   const siteURL = process.env.MM_SERVICESETTINGS_SITEURL || '';
   if (siteURL) {
-    publicPath = path.join(new url.URL(siteURL).pathname, 'static') + '/';
+    const pathname = new url.URL(siteURL).pathname;
+    publicPath = pathname.endsWith('/') ? pathname : pathname + '/';
   }
 }
 
@@ -93,12 +95,13 @@ const buildTimestamp = Date.now();
 
 var config = {
   entry: ['./src/root.tsx'],
+  // 输出结构：dist/root.html + dist/static/*（JS/CSS/资源），便于服务器部署
   output: {
-    path: path.resolve(__dirname, 'dist', 'static'),
+    path: path.resolve(__dirname, 'dist'),
     publicPath,
-    filename: '[name].[contenthash].js',
-    chunkFilename: '[name].[contenthash].js',
-    assetModuleFilename: 'files/[contenthash][ext]',
+    filename: 'static/[name].[contenthash].js',
+    chunkFilename: 'static/[name].[contenthash].js',
+    assetModuleFilename: 'static/files/[contenthash][ext]',
     clean: true,
   },
   module: {
@@ -124,7 +127,7 @@ var config = {
         exclude: [/en\.json$/],
         type: 'asset/resource',
         generator: {
-          filename: 'i18n/[name].[contenthash].json',
+          filename: 'static/i18n/[name].[contenthash].json',
         },
       },
       {
@@ -205,8 +208,8 @@ var config = {
       Buffer: ['buffer', 'Buffer'],
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
-      chunkFilename: '[name].[contenthash].css',
+      filename: 'static/[name].[contenthash].css',
+      chunkFilename: 'static/[name].[contenthash].css',
     }),
     new HtmlWebpackPlugin({
       filename: 'root.html',
@@ -231,20 +234,17 @@ var config = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        // 先复制 emoji 目录（单独处理，避免被下面的通用规则覆盖）
-        { from: 'src/images/emoji', to: 'emoji' },
-        // 复制整个 images 目录（排除 emoji，因为已经单独处理）
-        // 这样可以确保所有新增或替换的图片都被包含，包括 bk_imgs 等自定义文件夹
-        // 本地运行什么样，打包就应该是什么样子的逻辑
+        // 静态资源统一放到 dist/static/ 下，与 root.html 同级部署时由服务器提供 /static/ 路径
+        { from: 'src/images/emoji', to: 'static/emoji' },
         {
           from: 'src/images',
-          to: 'images',
+          to: 'static/images',
           globOptions: {
-            ignore: ['**/emoji/**'], // 排除 emoji，因为已经单独处理
+            ignore: ['**/emoji/**'],
           },
-          noErrorOnMissing: true, // 如果文件不存在也不报错
+          noErrorOnMissing: true,
         },
-        { from: '../node_modules/pdfjs-dist/cmaps', to: 'cmaps' },
+        { from: '../node_modules/pdfjs-dist/cmaps', to: 'static/cmaps' },
       ],
     }),
 
@@ -261,7 +261,7 @@ var config = {
       ios: true,
       fingerprints: false,
       orientation: 'any',
-      filename: 'manifest.json',
+      filename: 'static/manifest.json',
       icons: [{
         src: path.resolve('src/images/favicon/android-chrome-192x192.png'),
         type: 'image/png',
@@ -358,6 +358,8 @@ function generateCSP() {
   if (DEV) {
     // Development source maps require eval
     csp += ' \'unsafe-eval\'';
+    // 开发环境允许 HMR、API 代理和 Chrome DevTools 连接，避免 connect-src 回退到 default-src 导致拦截
+    csp += '; connect-src \'self\' ws://localhost:* http://localhost:* https://localhost:* chrome-extension:*';
   }
 
   return csp;
@@ -438,7 +440,7 @@ async function initializeModuleFederation() {
     './styles': './src/sass/styles.scss',
     './registry': 'module_registry',
   };
-  moduleFederationPluginOptions.filename = `remote_entry.js?bt=${buildTimestamp}`;
+  moduleFederationPluginOptions.filename = `static/remote_entry.js?bt=${buildTimestamp}`;
 
   config.plugins.push(new ModuleFederationPlugin(moduleFederationPluginOptions));
 
@@ -521,8 +523,9 @@ if (targetIsDevServer) {
       devMiddleware: {
         writeToDisk: false,
       },
+      // publicPath 为 '/' 时，入口 HTML 的 URL 为 /root.html
       historyApiFallback: {
-        index: '/static/root.html',
+        index: '/root.html',
       },
       // 禁用 webpack 编译警告和错误的 iframe 弹出层
       client: {

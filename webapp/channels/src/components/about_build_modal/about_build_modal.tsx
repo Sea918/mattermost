@@ -23,10 +23,9 @@ import AboutBuildModalCloud from './about_build_modal_cloud/about_build_modal_cl
 type SocketStatus = {
     connected: boolean;
     serverHostname: string | undefined;
-}
+};
 
 type Props = {
-
     /**
      * Function called after the modal has been hidden
      */
@@ -75,21 +74,10 @@ export default function AboutBuildModal(props: Props) {
     const license = props.license;
 
     if (license.Cloud === 'true') {
-        return (
-            <AboutBuildModalCloud
-                {...props}
-                show={show}
-                doHide={doHide}
-            />
-        );
+        return <AboutBuildModalCloud {...props} show={show} doHide={doHide} />;
     }
 
-    let title = (
-        <FormattedMessage
-            id='about.teamEditiont0'
-            defaultMessage='Team Edition'
-        />
-    );
+    let title = <FormattedMessage id='about.teamEditiont0' defaultMessage='Team Edition' />;
 
     let subTitle = (
         <FormattedMessage
@@ -100,27 +88,16 @@ export default function AboutBuildModal(props: Props) {
 
     let learnMore = (
         <div>
-            <FormattedMessage
-                id='about.teamEditionLearn'
-                defaultMessage='Join the Mattermost community at '
-            />
-            <ExternalLink
-                location='about_build_modal'
-                href='https://mattermost.com/community/'
-            >
-                {'mattermost.com/community/'}
+            <FormattedMessage id='about.teamEditionLearn' defaultMessage='Join the Mattermost community at ' />
+            <ExternalLink location='about_build_modal' href='https://guduu.co/'>
+                {'guduu.co'}
             </ExternalLink>
         </div>
     );
 
     let licensee;
     if (config.BuildEnterpriseReady === 'true') {
-        title = (
-            <FormattedMessage
-                id='about.teamEditiont1'
-                defaultMessage='Enterprise Edition'
-            />
-        );
+        title = <FormattedMessage id='about.teamEditiont1' defaultMessage='Enterprise Edition' />;
 
         subTitle = (
             <FormattedMessage
@@ -141,10 +118,7 @@ export default function AboutBuildModal(props: Props) {
                         values={{
                             planName: skuName,
                             link: (
-                                <ExternalLink
-                                    location='about_build_modal'
-                                    href='https://mattermost.com/'
-                                >
+                                <ExternalLink location='about_build_modal' href='https://mattermost.com/'>
                                     {'mattermost.com'}
                                 </ExternalLink>
                             ),
@@ -154,11 +128,9 @@ export default function AboutBuildModal(props: Props) {
             );
             licensee = (
                 <div className='form-group'>
-                    <FormattedMessage
-                        id='about.licensed'
-                        defaultMessage='Licensed to:'
-                    />
-                    <Nbsp/>{license.Company}
+                    <FormattedMessage id='about.licensed' defaultMessage='Licensed to:' />
+                    <Nbsp />
+                    {license.Company}
                 </div>
             );
         } else {
@@ -169,10 +141,7 @@ export default function AboutBuildModal(props: Props) {
                         defaultMessage='Learn more about Enterprise Edition at {link}'
                         values={{
                             link: (
-                                <ExternalLink
-                                    location='about_build_modal'
-                                    href='https://mattermost.com/'
-                                >
+                                <ExternalLink location='about_build_modal' href='https://mattermost.com/'>
                                     {'mattermost.com'}
                                 </ExternalLink>
                             ),
@@ -184,74 +153,67 @@ export default function AboutBuildModal(props: Props) {
     }
 
     const termsOfService = (
-        <ExternalLink
-            location='about_build_modal'
-            id='tosLink'
-            href={AboutLinks.TERMS_OF_SERVICE}
-        >
-            <FormattedMessage
-                id='about.tos'
-                defaultMessage='Terms of Use'
-            />
+        <ExternalLink location='about_build_modal' id='tosLink' href={AboutLinks.TERMS_OF_SERVICE}>
+            <FormattedMessage id='about.tos' defaultMessage='Terms of Use' />
         </ExternalLink>
     );
 
     const privacyPolicy = (
-        <ExternalLink
-            id='privacyLink'
-            location='about_build_modal'
-            href={AboutLinks.PRIVACY_POLICY}
-        >
-            <FormattedMessage
-                id='about.privacy'
-                defaultMessage='Privacy Policy'
-            />
+        <ExternalLink id='privacyLink' location='about_build_modal' href={AboutLinks.PRIVACY_POLICY}>
+            <FormattedMessage id='about.privacy' defaultMessage='Privacy Policy' />
         </ExternalLink>
     );
 
     const getServerVersionString = () => {
         const version = config.BuildNumber === 'dev' ? config.BuildNumber : config.Version;
         const fipsSuffix = config.IsFipsEnabled === 'true' ? ' (FIPS)' : '';
-        return intl.formatMessage(
-            {id: 'about.serverVersion', defaultMessage: 'Server Version:'},
-        ) + '\u00a0' + version + fipsSuffix;
+        return (
+            intl.formatMessage({id: 'about.serverVersion', defaultMessage: 'Server Version:'}) +
+            '\u00a0' +
+            version +
+            fipsSuffix
+        );
     };
 
     const getDesktopVersionString = () => {
-        return intl.formatMessage(
-            {id: 'about.desktopVersion', defaultMessage: 'Desktop Version:'},
-        ) + '\u00a0' + getDesktopVersion();
+        return (
+            intl.formatMessage({id: 'about.desktopVersion', defaultMessage: 'Desktop Version:'}) +
+            '\u00a0' +
+            getDesktopVersion()
+        );
     };
 
     const getLoadMetricString = () => {
-        return intl.formatMessage(
-            {id: 'about.loadmetric', defaultMessage: 'Load Metric:'},
-        ) + '\u00a0' + loadMetric;
+        return intl.formatMessage({id: 'about.loadmetric', defaultMessage: 'Load Metric:'}) + '\u00a0' + loadMetric;
     };
 
     const getDbVersionString = () => {
-        return intl.formatMessage(
-            {id: 'about.dbversion', defaultMessage: 'Database Schema Version:'},
-        ) + '\u00a0' + config.SchemaVersion;
+        return (
+            intl.formatMessage({id: 'about.dbversion', defaultMessage: 'Database Schema Version:'}) +
+            '\u00a0' +
+            config.SchemaVersion
+        );
     };
 
     const getBuildNumberString = () => {
-        return intl.formatMessage(
-            {id: 'about.buildnumber', defaultMessage: 'Build Number:'},
-        ) + '\u00a0' + (config.BuildNumber === 'dev' ? 'n/a' : config.BuildNumber);
+        return (
+            intl.formatMessage({id: 'about.buildnumber', defaultMessage: 'Build Number:'}) +
+            '\u00a0' +
+            (config.BuildNumber === 'dev' ? 'n/a' : config.BuildNumber)
+        );
     };
 
     const getDatabaseString = () => {
-        return intl.formatMessage(
-            {id: 'about.database', defaultMessage: 'Database:'},
-        ) + '\u00a0' + config.SQLDriverName;
+        return (
+            intl.formatMessage({id: 'about.database', defaultMessage: 'Database:'}) + '\u00a0' + config.SQLDriverName
+        );
     };
 
     const versionInfo = () => {
         const parts = [
             getServerVersionString(),
             isDesktopApp() && getDesktopVersionString(),
-            (loadMetric !== null && loadMetric > 0) && getLoadMetricString(),
+            loadMetric !== null && loadMetric > 0 && getLoadMetricString(),
             getDbVersionString(),
             getBuildNumberString(),
             getDatabaseString(),
@@ -263,40 +225,25 @@ export default function AboutBuildModal(props: Props) {
     if (!props.socketStatus.connected) {
         serverHostname = (
             <div>
-                <FormattedMessage
-                    id='about.serverHostname'
-                    defaultMessage='Hostname:'
-                />
-                <Nbsp/>
-                <FormattedMessage
-                    id='about.serverDisconnected'
-                    defaultMessage='disconnected'
-                />
+                <FormattedMessage id='about.serverHostname' defaultMessage='Hostname:' />
+                <Nbsp />
+                <FormattedMessage id='about.serverDisconnected' defaultMessage='disconnected' />
             </div>
         );
     } else if (props.socketStatus.serverHostname) {
         serverHostname = (
             <div>
-                <FormattedMessage
-                    id='about.serverHostname'
-                    defaultMessage='Hostname:'
-                />
-                <Nbsp/>
+                <FormattedMessage id='about.serverHostname' defaultMessage='Hostname:' />
+                <Nbsp />
                 {props.socketStatus.serverHostname}
             </div>
         );
     } else {
         serverHostname = (
             <div>
-                <FormattedMessage
-                    id='about.serverHostname'
-                    defaultMessage='Hostname:'
-                />
-                <Nbsp/>
-                <FormattedMessage
-                    id='about.serverUnknown'
-                    defaultMessage='server did not provide hostname'
-                />
+                <FormattedMessage id='about.serverHostname' defaultMessage='Hostname:' />
+                <Nbsp />
+                <FormattedMessage id='about.serverUnknown' defaultMessage='server did not provide hostname' />
             </div>
         );
     }
@@ -311,10 +258,7 @@ export default function AboutBuildModal(props: Props) {
             aria-labelledby='aboutModalLabel'
         >
             <Modal.Header closeButton={true}>
-                <Modal.Title
-                    componentClass='h1'
-                    id='aboutModalLabel'
-                >
+                <Modal.Title componentClass='h1' id='aboutModalLabel'>
                     <FormattedMessage
                         id='about.title'
                         values={{
@@ -327,7 +271,7 @@ export default function AboutBuildModal(props: Props) {
             <Modal.Body>
                 <div className='about-modal__content'>
                     <div className='about-modal__logo'>
-                        <MattermostLogo/>
+                        <MattermostLogo />
                     </div>
                     <div>
                         <h3 className='about-modal__title'>
@@ -335,28 +279,29 @@ export default function AboutBuildModal(props: Props) {
                                 {'Mattermost'} {title}
                             </strong>
                         </h3>
-                        <p className='about-modal__subtitle pb-2'>
-                            {subTitle}
-                        </p>
+                        <p className='about-modal__subtitle pb-2'>{subTitle}</p>
                         <div className='form-group less'>
-                            <div
-                                className='about-modal__version-info'
-                                data-testid='aboutModalVersionInfo'
-                            >
-                                {getServerVersionString()}<br/>
+                            <div className='about-modal__version-info' data-testid='aboutModalVersionInfo'>
+                                {getServerVersionString()}
+                                <br />
                                 {isDesktopApp() && (
                                     <>
-                                        {getDesktopVersionString()}<br/>
+                                        {getDesktopVersionString()}
+                                        <br />
                                     </>
                                 )}
-                                {(loadMetric !== null && loadMetric > 0) && (
+                                {loadMetric !== null && loadMetric > 0 && (
                                     <>
-                                        {getLoadMetricString()}<br/>
+                                        {getLoadMetricString()}
+                                        <br />
                                     </>
                                 )}
-                                {getDbVersionString()}<br/>
-                                {getBuildNumberString()}<br/>
-                                {getDatabaseString()}<br/>
+                                {getDbVersionString()}
+                                <br />
+                                {getBuildNumberString()}
+                                <br />
+                                {getDatabaseString()}
+                                <br />
                                 <CopyButton
                                     className='about-modal__version-info-copy-button'
                                     isForText={true}
@@ -387,7 +332,7 @@ export default function AboutBuildModal(props: Props) {
                         </div>
                     </div>
                 </div>
-                <div className='about-modal__notice form-group pt-3'>
+                <div style={{display: 'none'}} className='about-modal__notice form-group pt-3'>
                     <p>
                         <FormattedMessage
                             id='about.notice'
@@ -423,26 +368,17 @@ export default function AboutBuildModal(props: Props) {
                 </div>
                 <div className='about-modal__hash'>
                     <p>
-                        <FormattedMessage
-                            id='about.hash'
-                            defaultMessage='Build Hash:'
-                        />
-                        <Nbsp/>
+                        <FormattedMessage id='about.hash' defaultMessage='Build Hash:' />
+                        <Nbsp />
                         {config.BuildHash}
-                        <br/>
-                        <FormattedMessage
-                            id='about.hashee'
-                            defaultMessage='EE Build Hash:'
-                        />
-                        <Nbsp/>
+                        <br />
+                        <FormattedMessage id='about.hashee' defaultMessage='EE Build Hash:' />
+                        <Nbsp />
                         {config.BuildHashEnterprise}
                     </p>
                     <p>
-                        <FormattedMessage
-                            id='about.date'
-                            defaultMessage='Build Date:'
-                        />
-                        <Nbsp/>
+                        <FormattedMessage id='about.date' defaultMessage='Build Date:' />
+                        <Nbsp />
                         {config.BuildDate}
                     </p>
                 </div>

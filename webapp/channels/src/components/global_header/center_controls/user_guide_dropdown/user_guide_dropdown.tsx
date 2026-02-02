@@ -15,10 +15,12 @@ import {ModalIdentifiers} from 'utils/constants';
 
 import type {PropsFromRedux} from './index';
 
-const mattermostUserGuideLink = 'https://docs.mattermost.com/guides/use-mattermost.html';
-const trainingResourcesLink = 'https://academy.mattermost.com/';
-const askTheCommunityUrl = 'https://mattermost.com/pl/default-ask-mattermost-community/';
-
+// const mattermostUserGuideLink = 'https://docs.mattermost.com/guides/use-mattermost.html';
+// const trainingResourcesLink = 'https://academy.mattermost.com/';
+// const askTheCommunityUrl = 'https://mattermost.com/pl/default-ask-mattermost-community/';
+const mattermostUserGuideLink = 'https://guduu.co/';
+const trainingResourcesLink = 'https://guduu.co/';
+const askTheCommunityUrl = 'https://guduu.co/';
 type Props = WrappedComponentProps & PropsFromRedux;
 
 type State = {
@@ -48,12 +50,9 @@ class UserGuideDropdown extends React.PureComponent<Props, State> {
     };
 
     renderDropdownItems = (): React.ReactNode => {
-        const {
-            intl,
-            pluginMenuItems,
-        } = this.props;
+        const {intl, pluginMenuItems} = this.props;
 
-        const pluginItems = pluginMenuItems?.map((item) => {
+        const pluginItems = pluginMenuItems?.map(item => {
             return (
                 <Menu.ItemAction
                     id={item.id + '_pluginmenuitem'}
@@ -71,14 +70,20 @@ class UserGuideDropdown extends React.PureComponent<Props, State> {
                     id='mattermostUserGuideLink'
                     iconClassName='icon-file-text-outline'
                     url={mattermostUserGuideLink}
-                    text={intl.formatMessage({id: 'userGuideHelp.mattermostUserGuide', defaultMessage: 'Mattermost user guide'})}
+                    text={intl.formatMessage({
+                        id: 'userGuideHelp.mattermostUserGuide',
+                        defaultMessage: 'Guduu OSS User guide',
+                    })}
                 />
                 {this.props.helpLink && (
                     <Menu.ItemExternalLink
                         id='trainingResourcesLink'
                         iconClassName='icon-lightbulb-outline'
                         url={trainingResourcesLink}
-                        text={intl.formatMessage({id: 'userGuideHelp.trainingResources', defaultMessage: 'Training resources'})}
+                        text={intl.formatMessage({
+                            id: 'userGuideHelp.trainingResources',
+                            defaultMessage: 'Training resources',
+                        })}
                     />
                 )}
                 {this.props.enableAskCommunityLink === 'true' && (
@@ -86,7 +91,10 @@ class UserGuideDropdown extends React.PureComponent<Props, State> {
                         id='askTheCommunityLink'
                         iconClassName='icon-help'
                         url={askTheCommunityUrl}
-                        text={intl.formatMessage({id: 'userGuideHelp.askTheCommunity', defaultMessage: 'Ask the community'})}
+                        text={intl.formatMessage({
+                            id: 'userGuideHelp.askTheCommunity',
+                            defaultMessage: 'Ask the community',
+                        })}
                     />
                 )}
                 {this.props.reportAProblemLink && (
@@ -94,14 +102,20 @@ class UserGuideDropdown extends React.PureComponent<Props, State> {
                         id='reportAProblemLink'
                         iconClassName='icon-alert-outline'
                         url={this.props.reportAProblemLink}
-                        text={intl.formatMessage({id: 'userGuideHelp.reportAProblem', defaultMessage: 'Report a problem'})}
+                        text={intl.formatMessage({
+                            id: 'userGuideHelp.reportAProblem',
+                            defaultMessage: 'Report a problem',
+                        })}
                     />
                 )}
                 <Menu.ItemAction
                     id='keyboardShortcuts'
                     iconClassName='icon-keyboard-return'
                     onClick={this.openKeyboardShortcutsModal}
-                    text={intl.formatMessage({id: 'userGuideHelp.keyboardShortcuts', defaultMessage: 'Keyboard shortcuts'})}
+                    text={intl.formatMessage({
+                        id: 'userGuideHelp.keyboardShortcuts',
+                        defaultMessage: 'Keyboard shortcuts',
+                    })}
                 />
                 {pluginItems}
             </Menu.Group>
@@ -110,22 +124,11 @@ class UserGuideDropdown extends React.PureComponent<Props, State> {
 
     render() {
         const {intl} = this.props;
-        const tooltipText = (
-            <FormattedMessage
-                id={'channel_header.userHelpGuide'}
-                defaultMessage='Help'
-            />
-        );
+        const tooltipText = <FormattedMessage id={'channel_header.userHelpGuide'} defaultMessage='Help' />;
 
         return (
-            <MenuWrapper
-                id='helpMenuPortal'
-                className='userGuideHelp'
-                onToggle={this.buttonToggleState}
-            >
-                <WithTooltip
-                    title={tooltipText}
-                >
+            <MenuWrapper id='helpMenuPortal' className='userGuideHelp' onToggle={this.buttonToggleState}>
+                <WithTooltip title={tooltipText}>
                     <IconButton
                         icon={'help-circle-outline'}
                         onClick={() => {}} // icon button currently requires onclick ... needs to revisit
