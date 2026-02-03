@@ -5128,7 +5128,7 @@
     "navbar_dropdown.userGroups.modal.titleAdminPreTrial": "Try unlimited user groups with a free trial",
     "navbar_dropdown.userGroups.modal.titleEndUser": "User groups available in paid plans",
     "navbar_dropdown.userGroups.tooltip.cloudFreeTrial": "During your trial, you are able to create user groups. These user groups will be archived when your trial ends.",
-    "navbar_dropdown.versionText": "This is the free <link>unsupported</link> edition of GuDuu OS.",
+    "navbar_dropdown.versionText": "This is GuDuu OS 1.01 version.",
     "navbar_dropdown.viewMembers": "View Members",
     "newChannelWithBoard.tutorialTip.description": "The board you just created can be quickly accessed by clicking on the Boards icon in the App bar. You can view the boards linked to this channel in the right-hand sidebar and opening one in the expanded view.",
     "newChannelWithBoard.tutorialTip.title": "Access linked boards from the App Bar",

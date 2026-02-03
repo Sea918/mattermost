@@ -4333,7 +4333,7 @@
     "navbar_dropdown.userGroups.modal.titleAdminPreTrial": "透過免費試用嘗試無限使用者群組",
     "navbar_dropdown.userGroups.modal.titleEndUser": "僅付費方案可用的使用者群組",
     "navbar_dropdown.userGroups.tooltip.cloudFreeTrial": "在試用期間，您可以建立使用者群組。這些使用者群組將在您試用期結束後被封存。",
-    "navbar_dropdown.versionText": "這是 GuDuu OS <link>不受官方支援</link> 的免費版。",
+    "navbar_dropdown.versionText": "這是GuDuu OS 1.01版本",
     "navbar_dropdown.viewMembers": "檢視成員",
     "newChannelWithBoard.tutorialTip.description": "點擊應用程式列中的「看板」圖示可以快速存取您剛剛建立的看板。您可以在右方側邊欄中查看該頻道的看板，並以完整畫面開啟任一看板。",
     "newChannelWithBoard.tutorialTip.title": "從應用程式列存取連結的看板",

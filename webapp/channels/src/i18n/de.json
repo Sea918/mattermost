@@ -5133,7 +5133,7 @@
     "navbar_dropdown.userGroups.modal.titleAdminPreTrial": "Teste unbeschränkte Benutzergruppen mit einem kostenlosen Test",
     "navbar_dropdown.userGroups.modal.titleEndUser": "Benutzergruppen sind in den bezahlten Plänen verfügbar",
     "navbar_dropdown.userGroups.tooltip.cloudFreeTrial": "Während des Test hast du die Möglichkeit Benutzergruppen zu erstellen. Diese Gruppen werden nach deinem Test archiviert.",
-    "navbar_dropdown.versionText": "Dies ist die kostenlose <link>nicht unterstützte</link> Version von GuDuu OS.",
+    "navbar_dropdown.versionText": "Dies ist GuDuu OS Version 1.01.",
     "navbar_dropdown.viewMembers": "Zeige Mitglieder",
     "newChannelWithBoard.tutorialTip.description": "Auf das soeben erstellte Board kannst du schnell zugreifen, indem du auf das Symbol Boards in der App-Leiste klickst. Du kannst die Boards, die mit diesem Kanal verknüpft sind, in der rechten Seitenleiste anzeigen und eines in der Vollansicht öffnen.",
     "newChannelWithBoard.tutorialTip.title": "Zugriff auf verknüpfte Boards über die App-Leiste",
