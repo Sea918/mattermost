@@ -76,11 +76,9 @@ const STANDARD_EXCLUDE = [
   /node_modules/,
 ];
 
-// 生产：publicPath 为 '/'，filename 包含 static/ 前缀
-// 文件输出到 dist/static/ 目录，HTML 中引用 /static/xxx.js
-// 服务器配置 /static/ 映射到 dist/static/ 目录即可
+// 生产：publicPath 为 '/static/'，配合 output.path: 'dist/static'，实现 root.html 在 dist，资源在 static
 // 开发：可从环境变量覆盖，否则用 '/'，保证 /static/xxx 能正确解析
-let publicPath = '/';
+let publicPath = DEV ? '/' : '/static/';
 
 if (DEV) {
   const siteURL = process.env.MM_SERVICESETTINGS_SITEURL || '';
@@ -95,16 +93,18 @@ if (DEV) {
 // entries are guaranteed to have expired.
 const buildTimestamp = Date.now();
 
+// 静态资源前缀：开发环境需要 static/ 前缀，生产环境因为 output.path 已经在 static 下，不需要前缀
+const staticPrefix = DEV ? 'static/' : '';
+
 var config = {
   entry: ['./src/root.tsx'],
   // 输出结构：dist/root.html + dist/static/*（JS/CSS/资源），便于服务器部署
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, DEV ? 'dist' : 'dist/static'),
     publicPath,
-    // 所有资源统一放到 dist/static/ 目录下，HTML 中引用 /static/xxx.js
-    filename: 'static/[name].[contenthash].js',
-    chunkFilename: 'static/[name].[contenthash].js',
-    assetModuleFilename: 'static/files/[contenthash][ext]',
+    filename: `${staticPrefix}[name].[contenthash].js`,
+    chunkFilename: `${staticPrefix}[name].[contenthash].js`,
+    assetModuleFilename: `${staticPrefix}files/[contenthash][ext]`,
     clean: true,
   },
   module: {
@@ -130,7 +130,7 @@ var config = {
         exclude: [/en\.json$/],
         type: 'asset/resource',
         generator: {
-          filename: 'static/i18n/[name].[contenthash].json',
+          filename: `${staticPrefix}i18n/[name].[contenthash].json`,
         },
       },
       {
@@ -218,16 +218,15 @@ var config = {
       Buffer: ['buffer', 'Buffer'],
     }),
     new MiniCssExtractPlugin({
-      // CSS 文件统一放到 dist/static/ 目录下
-      filename: 'static/[name].[contenthash].css',
-      chunkFilename: 'static/[name].[contenthash].css',
+      filename: `${staticPrefix}[name].[contenthash].css`,
+      chunkFilename: `${staticPrefix}[name].[contenthash].css`,
     }),
     new HtmlWebpackPlugin({
-      filename: 'root.html',
+      filename: DEV ? 'root.html' : '../root.html',
       inject: 'head',
       template: 'src/root.html',
       scriptLoading: 'blocking',
-      publicPath: publicPath,
+      publicPath,
       // 传递品牌配置给模板
       templateParameters: {
         siteName: brandConfig.SITE_NAME,
@@ -245,17 +244,16 @@ var config = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        // 静态资源统一放到 dist/static/ 下，与 root.html 同级部署时由服务器提供 /static/ 路径
-        { from: 'src/images/emoji', to: 'static/emoji' },
+        { from: 'src/images/emoji', to: `${staticPrefix}emoji` },
         {
           from: 'src/images',
-          to: 'static/images',
+          to: `${staticPrefix}images`,
           globOptions: {
             ignore: ['**/emoji/**'],
           },
           noErrorOnMissing: true,
         },
-        { from: '../node_modules/pdfjs-dist/cmaps', to: 'static/cmaps' },
+        { from: '../node_modules/pdfjs-dist/cmaps', to: `${staticPrefix}cmaps` },
       ],
     }),
 
@@ -272,7 +270,7 @@ var config = {
       ios: true,
       fingerprints: false,
       orientation: 'any',
-      filename: 'static/manifest.json',
+      filename: `${staticPrefix}manifest.json`,
       icons: [{
         src: path.resolve('src/images/favicon/android-chrome-192x192.png'),
         type: 'image/png',
@@ -451,7 +449,7 @@ async function initializeModuleFederation() {
     './styles': './src/sass/styles.scss',
     './registry': 'module_registry',
   };
-  moduleFederationPluginOptions.filename = `static/remote_entry.js?bt=${buildTimestamp}`;
+  moduleFederationPluginOptions.filename = `${staticPrefix}remote_entry.js?bt=${buildTimestamp}`;
 
   config.plugins.push(new ModuleFederationPlugin(moduleFederationPluginOptions));
 
